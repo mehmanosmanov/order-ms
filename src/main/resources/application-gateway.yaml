@@ -1,0 +1,17 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customerModule
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/customer/**
+        - id: productModule
+          uri: http://localhost:8082/
+          predicates:
+            - Path=/product/**
+
+#        - id: orderModule
+#          uri: http://localhost:8080/
+#          predicates:
+#            - Path=/order/**
