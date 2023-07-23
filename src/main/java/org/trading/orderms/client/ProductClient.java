@@ -1,6 +1,9 @@
 package org.trading.orderms.client;
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.trading.orderms.dto.internal.ProductRequest;
@@ -10,7 +13,6 @@ import org.trading.orderms.dto.internal.ProductResponse;
  * @author Mehman on 18-07-2023
  * @project order-ms
  */
-
 @FeignClient(name = "productClient", url = "http://localhost:8082")
 public interface ProductClient {
 

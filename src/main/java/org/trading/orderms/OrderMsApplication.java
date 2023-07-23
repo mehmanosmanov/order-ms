@@ -5,10 +5,13 @@ import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
+import org.trading.orderms.client.CustomerClient;
+import org.trading.orderms.client.ProductClient;
 
 @SpringBootApplication
-@EnableFeignClients
-@SpringBootConfiguration
+@EnableFeignClients(clients = { CustomerClient.class, ProductClient.class})
+@ComponentScan("org.trading.orderms.client")
 public class OrderMsApplication {
 
    public static void main(String[] args) {

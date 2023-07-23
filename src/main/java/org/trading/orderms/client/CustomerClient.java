@@ -10,7 +10,6 @@ import org.trading.orderms.dto.internal.CustomerResponse;
  * @author Mehman on 18-07-2023
  * @project order-ms
  */
-
 @FeignClient(name = "customerClient", url = "http://localhost:8081")
 public interface CustomerClient {
 
