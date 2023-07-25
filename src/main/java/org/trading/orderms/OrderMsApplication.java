@@ -11,7 +11,6 @@ import org.trading.orderms.client.ProductClient;
 
 @SpringBootApplication
 @EnableFeignClients(clients = { CustomerClient.class, ProductClient.class})
-@ComponentScan("org.trading.orderms.client")
 public class OrderMsApplication {
 
    public static void main(String[] args) {

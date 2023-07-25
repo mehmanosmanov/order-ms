@@ -13,17 +13,18 @@ import org.trading.orderms.service.OrderService;
  * @created 02:58 Wednesday 19-07-2023
  */
 @RestController
-@RequiredArgsConstructor
+@RequestMapping("/make")
 @Slf4j
-//@RequestMapping("/cont")
+@RequiredArgsConstructor
 public class OrderController {
 
    private final  OrderService orderService;
 
-   @PostMapping("/make")
-   public void makeOrder(@RequestBody OrderRequest order) {
+   @PostMapping("/")
+   public String makeOrder(@RequestBody OrderRequest order) {
       log.info("Starting make order");
       orderService.makeOrder(order);
+      return "Order successfully made";
    }
 
    @GetMapping("/")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.trading.orderms.client.CustomerClient;
 import org.trading.orderms.client.ProductClient;
+import org.trading.orderms.dto.internal.CustomerResponse;
 import org.trading.orderms.dto.internal.ProductResponse;
 import org.trading.orderms.dto.request.OrderRequest;
 import org.trading.orderms.entity.Order;
@@ -13,6 +14,7 @@ import org.trading.orderms.mapper.OrderMapper;
 import org.trading.orderms.repository.OrderRepository;
 
 import java.time.LocalDateTime;
+
 
 /**
  * @author Mehman Osmanov
@@ -36,27 +38,38 @@ public class OrderServiceImpl implements OrderService {
    }
 
    @Override
-   public void makeOrder(OrderRequest order) {
-      ProductResponse product = productClient.getProductById(order.getProductId()).getBody();
-      customerClient.getCustomerById(order.getCustomerId());
+   public void makeOrder(OrderRequest orderRequest) {
+      ProductResponse product = productClient.getProductById(orderRequest.getProductId()).getBody();
+      CustomerResponse customer = customerClient.getCustomerById(orderRequest.getCustomerId()).getBody();
       assert product != null;
-      var totalPrice = product.getPrice() * order.getCount();
+      assert customer != null;
 
-      if (productClient.decreaseCountByCount(order.getProductId(), order.getCount())) {
-         if (customerClient.decreaseBalance(order.getCustomerId(), totalPrice)) {
-            Order order1 = Order.builder()
-                    .customerId(order.getCustomerId())
-                    .productId(order.getProductId())
-                    .count(order.getCount())
-                    .totalPrice(totalPrice)
-                    .orderedAt(LocalDateTime.now()).build();
-            orderRepository.save(order1);
-         } else {
-            productClient.increaseCountByCount(order.getProductId(), order.getCount());
-         }
-      } else {
-         customerClient.increaseBalance(order.getCustomerId(), totalPrice);
+      var totalPrice = product.getPrice() * orderRequest.getCount();
+      boolean transaction = false;
+
+      if (customer.getBalance() > totalPrice && product.getCount() > orderRequest.getCount())
+         transaction = makeTransaction(orderRequest, totalPrice);
+      if (transaction) {
+         Order order = mapper.dtoToEntity(orderRequest);
+         order.setTotalPrice(totalPrice);
+         order.setOrderedAt(LocalDateTime.now());
+         orderRepository.save(order);
       }
+   }
+
+   public boolean makeTransaction(OrderRequest orderRequest, double totalPrice) {
+      if (productClient.decreaseCountByCount(orderRequest.getProductId(), orderRequest.getCount())) {
+         if (customerClient.decreaseBalance(orderRequest.getCustomerId(), totalPrice)) {
+            log.info("Transaction was successfully");
+            return true;
+         } else {
+            log.warn("Something went wrong in the customer-ms");
+            productClient.increaseCountByCount(orderRequest.getProductId(), orderRequest.getCount());
+            return false;
+         }
+      } else
+         log.warn("Something went wrong in the product-ms");
+      return false;
    }
 }
 
