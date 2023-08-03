@@ -1,0 +1,7 @@
+{
+  "firstName":"Test",
+  "lastName":"Testov",
+  "int age":25,
+  "address":"Baku",
+  "balance":300
+}
