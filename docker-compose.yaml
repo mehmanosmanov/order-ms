@@ -3,4 +3,9 @@ services:
     image: customer-ms
     container_name: customer
     ports:
-      - "8088:8095"
+      - "8081:8095"
+  product-ms:
+    image: :product-ms
+    container_name: :product
+    ports:
+      - "8082:8095"
