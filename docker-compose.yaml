@@ -1,0 +1,6 @@
+services:
+  customer-ms:
+    image: customer-ms
+    container_name: customer
+    ports:
+      - "8088:8095"
