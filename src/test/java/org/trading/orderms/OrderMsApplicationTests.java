@@ -22,10 +22,8 @@ import static org.springframework.util.StreamUtils.copyToString;
 class OrderMsApplicationTests {
 
     @Autowired
-    @Qualifier("customer")
     private WireMockServer customer;
     @Autowired
-    @Qualifier("product")
     private WireMockServer product;
 
     @BeforeEach
