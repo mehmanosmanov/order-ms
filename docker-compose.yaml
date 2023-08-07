@@ -8,4 +8,4 @@ services:
     image: :product-ms
     container_name: :product
     ports:
-      - "8082:8095"
+      - "8082:8065"
